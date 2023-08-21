@@ -1,7 +1,7 @@
-package com.example.covidtracker.Services;
+package com.example.covidtracker.Service;
 
+import com.example.covidtracker.Model.CovidData;
 import com.example.covidtracker.Repository.CovidDataRepository;
-import com.example.covidtracker.models.CovidData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

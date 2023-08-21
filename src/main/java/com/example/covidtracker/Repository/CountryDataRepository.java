@@ -1,6 +1,6 @@
 package com.example.covidtracker.Repository;
 
-import com.example.covidtracker.models.CountryData;
+import com.example.covidtracker.Model.CountryData;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;

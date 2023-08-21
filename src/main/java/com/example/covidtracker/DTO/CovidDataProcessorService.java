@@ -1,10 +1,12 @@
-package com.example.covidtracker.Services;
+package com.example.covidtracker.DTO;
 
-import com.example.covidtracker.models.CountryData;
-import com.example.covidtracker.models.CovidData;
+import com.example.covidtracker.Service.CountryDataService;
+import com.example.covidtracker.Service.CovidDataService;
+import com.example.covidtracker.Model.CountryData;
+import com.example.covidtracker.Model.CovidData;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import redis.clients.jedis.Jedis;
 
@@ -17,15 +19,13 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
 import java.util.Iterator;
-
 @Service
+@RequiredArgsConstructor
 public class CovidDataProcessorService {
 
-    @Autowired
-    CountryDataService countryDataService;
+    private final CountryDataService countryDataService;
 
-    @Autowired
-    CovidDataService covidDataService;
+    private final CovidDataService covidDataService;
 
     public final String VIRUS_CONFIRMED_URL="https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv";
     public final String VIRUS_DECEASED_URL="https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_global.csv";
@@ -74,7 +74,7 @@ public class CovidDataProcessorService {
 
             int latestTotalDeceasedCases = Integer.parseInt(currentDeceasedRecord.get(currentDeceasedRecord.size() - 1));
 
-            int latestDailyCases=Integer.parseInt(currentConfirmedRecord.get(currentConfirmedRecord.size() - 1))-Integer.parseInt(currentConfirmedRecord.get(currentConfirmedRecord.size() - 2));
+            int latestDailyCases=Integer.parseInt(currentConfirmedRecord.get(currentConfirmedRecord.size() - 1))- Integer.parseInt(currentConfirmedRecord.get(currentConfirmedRecord.size() - 2));
 
             int latestDeceasedCases= Integer.parseInt(currentDeceasedRecord.get(currentDeceasedRecord.size() - 1))- Integer.parseInt(currentDeceasedRecord.get(currentDeceasedRecord.size() - 2));
 
@@ -113,11 +113,11 @@ public class CovidDataProcessorService {
             currentDeceasedRecord=nextDeceasedRecord;
 
             //Setting all the obtained data to the CovidData object
-            totalConfirmedCases=totalConfirmedCases+latestTotalConfirmedCases;
-            totalDeceasedCases=totalDeceasedCases+latestTotalDeceasedCases;
+            totalConfirmedCases+=latestTotalConfirmedCases;
+            totalDeceasedCases+=latestTotalDeceasedCases;
             totalRecoveredCases=totalConfirmedCases-totalDeceasedCases;
-            dailyCases=dailyCases+latestDailyCases;
-            dailyDeceasedCases=dailyDeceasedCases+latestDeceasedCases;
+            dailyCases+=latestDailyCases;
+            dailyDeceasedCases+=latestDeceasedCases;
 
             covidData.setId(1);
             covidData.setTotalConfirmedData(totalConfirmedCases);
@@ -158,14 +158,13 @@ public class CovidDataProcessorService {
         StringReader csvReader= new StringReader(httpResponse.body());
 
         // Create a CSVFormat with header and allowing missing column names
-        Iterator<CSVRecord> csvRecord = CSVFormat.Builder.create()
+
+        // Parse the CSV file and return an Iterator of CSVRecord objects
+        return CSVFormat.Builder.create()
                 .setHeader()
                 .setAllowMissingColumnNames(true)
                 .build()
                 .parse(csvReader).iterator();
-
-        // Parse the CSV file and return an Iterator of CSVRecord objects
-        return csvRecord;
 
     }
 }

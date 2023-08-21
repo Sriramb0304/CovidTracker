@@ -1,21 +1,20 @@
 package com.example.covidtracker.Controller;
 
-import com.example.covidtracker.Services.CountryDataService;
-import com.example.covidtracker.Services.CovidDataService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.covidtracker.Service.CountryDataService;
+import com.example.covidtracker.Service.CovidDataService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
+@RequiredArgsConstructor
 public class HomeController {
 
-    @Autowired
-    CountryDataService countryDataService;
 
-    @Autowired
-    CovidDataService CovidDataService;
+    private final CountryDataService countryDataService;
+    private final CovidDataService CovidDataService;
 
 
     //The method handles get request for the homepage

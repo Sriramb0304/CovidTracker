@@ -1,4 +1,4 @@
-package com.example.covidtracker.models;
+package com.example.covidtracker.Model;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
